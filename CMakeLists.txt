@@ -49,6 +49,11 @@
 cmake_minimum_required (VERSION 3.1)
 ENABLE_LANGUAGE(CXX)
 
+# please stop attempting to use C:/Program Files/${PROJECT_NAME} as the install directory. that is bad.
+if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+    set (CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install" CACHE PATH "default install path" FORCE )
+endif()
+
 if(NOT CMAKE_BUILD_TYPE AND NOT (MSVC_IDE OR XCODE))
   set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type, one of: Release, Debug" FORCE)
 endif()
