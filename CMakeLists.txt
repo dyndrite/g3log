@@ -181,7 +181,7 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux" OR ${CMAKE_SYSTEM_NAME} MATCHES "Darwin"
    #      usage: make; sudo make install
    #
    # ==========================================================================
-   INCLUDE (${g3log_SOURCE_DIR}/CPackLists.txt)
+   # INCLUDE (${g3log_SOURCE_DIR}/CPackLists.txt)
 ENDIF()
 
 IF(MINGW)
@@ -190,7 +190,7 @@ IF(MINGW)
    #   usage: make; make install
    #
    # ==========================================================================
-   INCLUDE (${g3log_SOURCE_DIR}/CPackLists.txt)
+   # INCLUDE (${g3log_SOURCE_DIR}/CPackLists.txt)
 ENDIF()
 
 IF (NOT MSVC)
