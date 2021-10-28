@@ -14,15 +14,15 @@ class G3logConan(ConanFile):
     topics = ("c++", "g3log", "log")
     settings = "os", "compiler", "build_type", "arch"
     options = {
-      "shared": [True, False],
-      "fPIC": [True, False],
-      "use_dynamic_logging_levels": [True, False],
-      "change_debug_to_dbug": [True, False],
-      "use_dynamic_max_message_size": [True, False],
-      "log_full_filename": [True, False],
-      "enable_fatal_signal_handling": [True, False],
-      "enable_vectored_exception_handling": [True, False],
-      "debug_break_at_fatal_signal": [True, False]
+        "shared": [True, False],
+        "fPIC": [True, False],
+        "use_dynamic_logging_levels": [True, False],
+        "change_debug_to_dbug": [True, False],
+        "use_dynamic_max_message_size": [True, False],
+        "log_full_filename": [True, False],
+        "enable_fatal_signal_handling": [True, False],
+        "enable_vectored_exception_handling": [True, False],
+        "debug_break_at_fatal_signal": [True, False]
     }
     default_options = {key: False for key in options.keys()}
     default_options["change_debug_to_dbug"] = True
