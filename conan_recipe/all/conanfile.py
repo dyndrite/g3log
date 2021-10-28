@@ -1,7 +1,6 @@
 import os
-from os import path
+from conan.tools.files import rename
 from conans import ConanFile, CMake, tools
-from conans.tools import Version
 from conans.errors import ConanInvalidConfiguration
 
 
@@ -37,7 +36,7 @@ class G3logConan(ConanFile):
 
     def _has_support_for_cpp14(self):
         supported_compilers = [("apple-clang", 5.1), ("clang", 3.4), ("gcc", 6.1), ("Visual Studio", 15.0)]
-        compiler, version = self.settings.compiler, Version(self.settings.compiler.version)
+        compiler, version = self.settings.compiler, tools.Version(self.settings.compiler.version)
         return any(compiler == sc[0] and version >= sc[1] for sc in supported_compilers)
 
     def configure(self):
@@ -53,7 +52,7 @@ class G3logConan(ConanFile):
         tools.get(**self.conan_data["sources"][self.version])
         dir_postfix = self.conan_data["sources"][self.version]["url"].split("/")[-1][:-7]
         dir_postfix = dir_postfix.replace('+', '-')
-        os.rename("g3log-{}".format(dir_postfix), self._source_subfolder)
+        rename(self, src="g3log-{}".format(dir_postfix), dst=self._source_subfolder)
 
     def config_options(self):
         if self.settings.os == "Windows":
@@ -65,25 +64,25 @@ class G3logConan(ConanFile):
             if self.options.shared:
                 if self.settings.compiler == "Visual Studio":
                     current_lib = os.path.join(lib_path, "g3log.lib")
-                    os.rename(current_lib, os.path.join(lib_path, "g3logger.lib"))
+                    rename(self, src=current_lib, dst=os.path.join(lib_path, "g3logger.lib"))
             else:
                 if self.settings.compiler == "Visual Studio":
                     current_lib = os.path.join(lib_path, "g3log.lib")
-                    os.rename(current_lib, os.path.join(lib_path, "g3logger.lib"))
+                    rename(self, src=current_lib, dst=os.path.join(lib_path, "g3logger.lib"))
                 elif self.settings.compiler == "gcc":
                     current_lib = os.path.join(lib_path, "libg3log.a")
-                    os.rename(current_lib, os.path.join(lib_path, "libg3logger.a"))
+                    rename(self, src=current_lib, dst=os.path.join(lib_path, "libg3logger.a"))
                 elif self.settings.compiler == "clang":
                     current_lib = os.path.join(lib_path, "g3log.lib")
-                    os.rename(current_lib, os.path.join(lib_path, "g3logger.lib"))
+                    rename(self, src=current_lib, dst=os.path.join(lib_path, "g3logger.lib"))
         if self.settings.os == "Linux":
             lib_path = os.path.join(self.package_folder, "lib")
             if self.settings.compiler == "gcc":
                 current_lib = os.path.join(lib_path, "libg3log.a")
-                os.rename(current_lib, os.path.join(lib_path, "libg3logger.a"))
+                rename(self, src=current_lib, dst=os.path.join(lib_path, "libg3logger.a"))
             elif self.settings.compiler == "clang":
                 current_lib = os.path.join(lib_path, "libg3log.a")
-                os.rename(current_lib, os.path.join(lib_path, "libg3logger.a"))
+                rename(self, src=current_lib, dst=os.path.join(lib_path, "libg3logger.a"))
 
     def _configure_cmake(self):
         cmake = CMake(self)

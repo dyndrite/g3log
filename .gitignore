@@ -12,3 +12,4 @@ gtest-1.7.0
 .conan/**
 *.log
 *.log.lock
+conan_recipe/all/test_package/build/**
