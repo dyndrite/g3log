@@ -6,6 +6,7 @@ from conans.errors import ConanInvalidConfiguration
 
 class G3logConan(ConanFile):
     name = "dynd-g3log"
+    revision_mode = "scm"
     url = "https://github.com/conan-io/conan-center-index"
     homepage = "https://github.com/KjellKod/g3log"
     license = "The Unlicense"
