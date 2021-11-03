@@ -7,3 +7,9 @@ build_clang
 build_travis
 gtest-1.7.0
 *~
+.vscode/**
+.idea/**
+.conan/**
+*.log
+*.log.lock
+conan_recipe/all/test_package/build/**
