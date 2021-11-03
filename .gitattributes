@@ -1,0 +1,7 @@
+conan_recipe/config.yml eol=lf
+conan_recipe/all/conanfile.py eol=lf
+conan_recipe/all/conandata.yml eol=lf
+conan_recipe/all/CMakeLists.txt eol=lf
+conan_recipe/all/test_package/conanfile.py eol=lf
+conan_recipe/all/test_package/CMakeLists.txt eol=lf
+conan_recipe/all/test_package/test_package.cpp eol=lf
