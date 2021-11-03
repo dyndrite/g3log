@@ -27,10 +27,10 @@ pipeline {
             agent {
                 label 'linux_docker'
             }
-            // when {
-            //     beforeAgent true
-            //     branch 'dyn_master'
-            // }
+            when {
+                beforeAgent true
+                branch 'dyn_master'
+            }
             steps {
                 echo "BuildNode ${NODE_NAME}"
                 script {
@@ -58,10 +58,10 @@ pipeline {
             agent {
                 label 'linux_docker'
             }
-            // when {
-            //     beforeAgent true
-            //     branch 'dyn_master'
-            // }
+            when {
+                beforeAgent true
+                branch 'dyn_master'
+            }
             steps {
                 echo "BuildNode ${NODE_NAME}"
                 script {
@@ -523,10 +523,10 @@ pipeline {
             agent {
                 label 'linux_docker'
             }
-            // when {
-            //     beforeAgent true
-            //     branch 'dyn_master'
-            // }
+            when {
+                beforeAgent true
+                branch 'dyn_master'
+            }
             steps {
                 script {
                     echo "BuildNode ${NODE_NAME}"
@@ -554,10 +554,10 @@ pipeline {
             agent {
                 label 'linux_docker'
             }
-            // when {
-            //     beforeAgent true
-            //     branch 'dyn_master'
-            // }
+            when {
+                beforeAgent true
+                branch 'dyn_master'
+            }
             steps {
                 script {
                     echo "BuildNode ${NODE_NAME}"
@@ -585,10 +585,10 @@ pipeline {
             agent {
                 label 'dev-env-20201110-windows'
             }
-            // when {
-            //     beforeAgent true
-            //     branch 'dyn_master'
-            // }
+            when {
+                beforeAgent true
+                branch 'dyn_master'
+            }
             steps {
                 echo "BuildNode ${NODE_NAME}"
                 script {
@@ -610,10 +610,10 @@ pipeline {
             agent {
                 label 'dev-env-20201110-windows'
             }
-            // when {
-            //     beforeAgent true
-            //     branch 'dyn_master'
-            // }
+            when {
+                beforeAgent true
+                branch 'dyn_master'
+            }
             steps {
                 echo "BuildNode ${NODE_NAME}"
                 script {
