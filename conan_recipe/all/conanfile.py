@@ -2,7 +2,7 @@ from conan import ConanFile
 from conan.errors import ConanInvalidConfiguration
 from conan.tools.build import check_min_cppstd
 from conan.tools.cmake import CMake, CMakeToolchain, cmake_layout
-from conan.tools.files import apply_conandata_patches, copy, get, rmdir, save, rename
+from conan.tools.files import copy, get, rmdir, save, rename
 from conan.tools.microsoft import is_msvc
 from os import environ
 import os
