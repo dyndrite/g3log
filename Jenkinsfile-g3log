@@ -25,7 +25,7 @@ pipeline {
         }
         stage('G3log Conan - GNU7 Release') {
             agent {
-                label 'linux_docker'
+                label 'gimli'
             }
             // when {
             //     beforeAgent true
@@ -38,7 +38,7 @@ pipeline {
                         uid = sh(returnStdout: true, script: 'id -u').trim()
                         gid = sh(returnStdout: true, script: 'id -g').trim()
                         docker.withRegistry('', 'docker-access') {
-                            docker.image('dyndrite/corazon-ubuntu20.04-cuda11.2:gcc-7').inside("--runtime=nvidia -u ${uid}:${gid} -e CONAN_USER_HOME=${WORKSPACE} -e CONAN_USER_HOME_SHORT=None") {
+                            docker.image('dyndrite/corazon-ubuntu20.04-cuda11.6:gcc-7').inside("--runtime=nvidia -u ${uid}:${gid} -e CONAN_USER_HOME=${WORKSPACE} -e CONAN_USER_HOME_SHORT=None") {
                                 localConanClientID = conanArtifactoryConnection()
                                 rtConanRun (
                                     clientId: localConanClientID,
@@ -56,12 +56,12 @@ pipeline {
         }
         stage('G3log Conan - GNU7 Debug') {
             agent {
-                label 'linux_docker'
+                label 'gimli'
             }
-            when {
-                beforeAgent true
-                branch 'dyn_master'
-            }
+            // when {
+            //     beforeAgent true
+            //     branch 'dyn_master'
+            // }
             steps {
                 echo "BuildNode ${NODE_NAME}"
                 script {
@@ -69,7 +69,7 @@ pipeline {
                         uid = sh(returnStdout: true, script: 'id -u').trim()
                         gid = sh(returnStdout: true, script: 'id -g').trim()
                         docker.withRegistry('', 'docker-access') {
-                            docker.image('dyndrite/corazon-ubuntu20.04-cuda11.2:gcc-7').inside("--runtime=nvidia -u ${uid}:${gid} -e CONAN_USER_HOME=${WORKSPACE} -e CONAN_USER_HOME_SHORT=None") {
+                            docker.image('dyndrite/corazon-ubuntu20.04-cuda11.6:gcc-7').inside("--runtime=nvidia -u ${uid}:${gid} -e CONAN_USER_HOME=${WORKSPACE} -e CONAN_USER_HOME_SHORT=None") {
                                 localConanClientID = conanArtifactoryConnection()
                                 rtConanRun (
                                     clientId: localConanClientID,
@@ -100,7 +100,7 @@ pipeline {
                         uid = sh(returnStdout: true, script: 'id -u').trim()
                         gid = sh(returnStdout: true, script: 'id -g').trim()
                         docker.withRegistry('', 'docker-access') {
-                            docker.image('dyndrite/corazon-ubuntu20.04-cuda11.2:gcc-8').inside("--runtime=nvidia -u ${uid}:${gid} -e CONAN_USER_HOME=${WORKSPACE} -e CONAN_USER_HOME_SHORT=None") {
+                            docker.image('dyndrite/corazon-ubuntu20.04-cuda11.6:gcc-8').inside("--runtime=nvidia -u ${uid}:${gid} -e CONAN_USER_HOME=${WORKSPACE} -e CONAN_USER_HOME_SHORT=None") {
                                 localConanClientID = conanArtifactoryConnection()
                                 rtConanRun (
                                     clientId: localConanClientID,
@@ -131,7 +131,7 @@ pipeline {
                         uid = sh(returnStdout: true, script: 'id -u').trim()
                         gid = sh(returnStdout: true, script: 'id -g').trim()
                         docker.withRegistry('', 'docker-access') {
-                            docker.image('dyndrite/corazon-ubuntu20.04-cuda11.2:gcc-8').inside("--runtime=nvidia -u ${uid}:${gid} -e CONAN_USER_HOME=${WORKSPACE} -e CONAN_USER_HOME_SHORT=None") {
+                            docker.image('dyndrite/corazon-ubuntu20.04-cuda11.6:gcc-8').inside("--runtime=nvidia -u ${uid}:${gid} -e CONAN_USER_HOME=${WORKSPACE} -e CONAN_USER_HOME_SHORT=None") {
                                 localConanClientID = conanArtifactoryConnection()
                                 rtConanRun (
                                     clientId: localConanClientID,
@@ -162,7 +162,7 @@ pipeline {
                         uid = sh(returnStdout: true, script: 'id -u').trim()
                         gid = sh(returnStdout: true, script: 'id -g').trim()
                         docker.withRegistry('', 'docker-access') {
-                            docker.image('dyndrite/corazon-ubuntu20.04-cuda11.2:gcc-9').inside("--runtime=nvidia -u ${uid}:${gid} -e CONAN_USER_HOME=${WORKSPACE} -e CONAN_USER_HOME_SHORT=None") {
+                            docker.image('dyndrite/corazon-ubuntu20.04-cuda11.6:gcc-9').inside("--runtime=nvidia -u ${uid}:${gid} -e CONAN_USER_HOME=${WORKSPACE} -e CONAN_USER_HOME_SHORT=None") {
                                 localConanClientID = conanArtifactoryConnection()
                                 rtConanRun (
                                     clientId: localConanClientID,
@@ -193,7 +193,7 @@ pipeline {
                         uid = sh(returnStdout: true, script: 'id -u').trim()
                         gid = sh(returnStdout: true, script: 'id -g').trim()
                         docker.withRegistry('', 'docker-access') {
-                            docker.image('dyndrite/corazon-ubuntu20.04-cuda11.2:gcc-9').inside("--runtime=nvidia -u ${uid}:${gid} -e CONAN_USER_HOME=${WORKSPACE} -e CONAN_USER_HOME_SHORT=None") {
+                            docker.image('dyndrite/corazon-ubuntu20.04-cuda11.6:gcc-9').inside("--runtime=nvidia -u ${uid}:${gid} -e CONAN_USER_HOME=${WORKSPACE} -e CONAN_USER_HOME_SHORT=None") {
                                 localConanClientID = conanArtifactoryConnection()
                                 rtConanRun (
                                     clientId: localConanClientID,
@@ -224,7 +224,7 @@ pipeline {
                         uid = sh(returnStdout: true, script: 'id -u').trim()
                         gid = sh(returnStdout: true, script: 'id -g').trim()
                         docker.withRegistry('', 'docker-access') {
-                            docker.image('dyndrite/corazon-ubuntu20.04-cuda11.2:clang-6').inside("--runtime=nvidia -u ${uid}:${gid} -e CONAN_USER_HOME=${WORKSPACE} -e CONAN_USER_HOME_SHORT=None") {
+                            docker.image('dyndrite/corazon-ubuntu20.04-cuda11.6:clang-6').inside("--runtime=nvidia -u ${uid}:${gid} -e CONAN_USER_HOME=${WORKSPACE} -e CONAN_USER_HOME_SHORT=None") {
                                 localConanClientID = conanArtifactoryConnection()
                                 rtConanRun (
                                     clientId: localConanClientID,
@@ -255,7 +255,7 @@ pipeline {
                         uid = sh(returnStdout: true, script: 'id -u').trim()
                         gid = sh(returnStdout: true, script: 'id -g').trim()
                         docker.withRegistry('', 'docker-access') {
-                            docker.image('dyndrite/corazon-ubuntu20.04-cuda11.2:clang-6').inside("--runtime=nvidia -u ${uid}:${gid} -e CONAN_USER_HOME=${WORKSPACE} -e CONAN_USER_HOME_SHORT=None") {
+                            docker.image('dyndrite/corazon-ubuntu20.04-cuda11.6:clang-6').inside("--runtime=nvidia -u ${uid}:${gid} -e CONAN_USER_HOME=${WORKSPACE} -e CONAN_USER_HOME_SHORT=None") {
                                 localConanClientID = conanArtifactoryConnection()
                                 rtConanRun (
                                     clientId: localConanClientID,
@@ -286,7 +286,7 @@ pipeline {
                         uid = sh(returnStdout: true, script: 'id -u').trim()
                         gid = sh(returnStdout: true, script: 'id -g').trim()
                         docker.withRegistry('', 'docker-access') {
-                            docker.image('dyndrite/corazon-ubuntu20.04-cuda11.2:clang-7').inside("--runtime=nvidia -u ${uid}:${gid} -e CONAN_USER_HOME=${WORKSPACE} -e CONAN_USER_HOME_SHORT=None") {
+                            docker.image('dyndrite/corazon-ubuntu20.04-cuda11.6:clang-7').inside("--runtime=nvidia -u ${uid}:${gid} -e CONAN_USER_HOME=${WORKSPACE} -e CONAN_USER_HOME_SHORT=None") {
                                 localConanClientID = conanArtifactoryConnection()
                                 rtConanRun (
                                     clientId: localConanClientID,
@@ -317,7 +317,7 @@ pipeline {
                         uid = sh(returnStdout: true, script: 'id -u').trim()
                         gid = sh(returnStdout: true, script: 'id -g').trim()
                         docker.withRegistry('', 'docker-access') {
-                            docker.image('dyndrite/corazon-ubuntu20.04-cuda11.2:clang-7').inside("--runtime=nvidia -u ${uid}:${gid} -e CONAN_USER_HOME=${WORKSPACE} -e CONAN_USER_HOME_SHORT=None") {
+                            docker.image('dyndrite/corazon-ubuntu20.04-cuda11.6:clang-7').inside("--runtime=nvidia -u ${uid}:${gid} -e CONAN_USER_HOME=${WORKSPACE} -e CONAN_USER_HOME_SHORT=None") {
                                 localConanClientID = conanArtifactoryConnection()
                                 rtConanRun (
                                     clientId: localConanClientID,
@@ -348,7 +348,7 @@ pipeline {
                         uid = sh(returnStdout: true, script: 'id -u').trim()
                         gid = sh(returnStdout: true, script: 'id -g').trim()
                         docker.withRegistry('', 'docker-access') {
-                            docker.image('dyndrite/corazon-ubuntu20.04-cuda11.2:clang-8').inside("--runtime=nvidia -u ${uid}:${gid} -e CONAN_USER_HOME=${WORKSPACE} -e CONAN_USER_HOME_SHORT=None") {
+                            docker.image('dyndrite/corazon-ubuntu20.04-cuda11.6:clang-8').inside("--runtime=nvidia -u ${uid}:${gid} -e CONAN_USER_HOME=${WORKSPACE} -e CONAN_USER_HOME_SHORT=None") {
                                 localConanClientID = conanArtifactoryConnection()
                                 rtConanRun (
                                     clientId: localConanClientID,
@@ -379,7 +379,7 @@ pipeline {
                         uid = sh(returnStdout: true, script: 'id -u').trim()
                         gid = sh(returnStdout: true, script: 'id -g').trim()
                         docker.withRegistry('', 'docker-access') {
-                            docker.image('dyndrite/corazon-ubuntu20.04-cuda11.2:clang-8').inside("--runtime=nvidia -u ${uid}:${gid} -e CONAN_USER_HOME=${WORKSPACE} -e CONAN_USER_HOME_SHORT=None") {
+                            docker.image('dyndrite/corazon-ubuntu20.04-cuda11.6:clang-8').inside("--runtime=nvidia -u ${uid}:${gid} -e CONAN_USER_HOME=${WORKSPACE} -e CONAN_USER_HOME_SHORT=None") {
                                 localConanClientID = conanArtifactoryConnection()
                                 rtConanRun (
                                     clientId: localConanClientID,
@@ -410,7 +410,7 @@ pipeline {
                         uid = sh(returnStdout: true, script: 'id -u').trim()
                         gid = sh(returnStdout: true, script: 'id -g').trim()
                         docker.withRegistry('', 'docker-access') {
-                            docker.image('dyndrite/corazon-ubuntu20.04-cuda11.2:clang-9').inside("--runtime=nvidia -u ${uid}:${gid} -e CONAN_USER_HOME=${WORKSPACE} -e CONAN_USER_HOME_SHORT=None") {
+                            docker.image('dyndrite/corazon-ubuntu20.04-cuda11.6:clang-9').inside("--runtime=nvidia -u ${uid}:${gid} -e CONAN_USER_HOME=${WORKSPACE} -e CONAN_USER_HOME_SHORT=None") {
                                 localConanClientID = conanArtifactoryConnection()
                                 rtConanRun (
                                     clientId: localConanClientID,
@@ -441,7 +441,7 @@ pipeline {
                         uid = sh(returnStdout: true, script: 'id -u').trim()
                         gid = sh(returnStdout: true, script: 'id -g').trim()
                         docker.withRegistry('', 'docker-access') {
-                            docker.image('dyndrite/corazon-ubuntu20.04-cuda11.2:clang-9').inside("--runtime=nvidia -u ${uid}:${gid} -e CONAN_USER_HOME=${WORKSPACE} -e CONAN_USER_HOME_SHORT=None") {
+                            docker.image('dyndrite/corazon-ubuntu20.04-cuda11.6:clang-9').inside("--runtime=nvidia -u ${uid}:${gid} -e CONAN_USER_HOME=${WORKSPACE} -e CONAN_USER_HOME_SHORT=None") {
                                 localConanClientID = conanArtifactoryConnection()
                                 rtConanRun (
                                     clientId: localConanClientID,
@@ -472,7 +472,7 @@ pipeline {
                         uid = sh(returnStdout: true, script: 'id -u').trim()
                         gid = sh(returnStdout: true, script: 'id -g').trim()
                         docker.withRegistry('', 'docker-access') {
-                            docker.image('dyndrite/corazon-ubuntu20.04-cuda11.2:clang-10').inside("--runtime=nvidia -u ${uid}:${gid} -e CONAN_USER_HOME=${WORKSPACE} -e CONAN_USER_HOME_SHORT=None") {
+                            docker.image('dyndrite/corazon-ubuntu20.04-cuda11.6:clang-10').inside("--runtime=nvidia -u ${uid}:${gid} -e CONAN_USER_HOME=${WORKSPACE} -e CONAN_USER_HOME_SHORT=None") {
                                 localConanClientID = conanArtifactoryConnection()
                                 rtConanRun (
                                     clientId: localConanClientID,
@@ -503,7 +503,7 @@ pipeline {
                         uid = sh(returnStdout: true, script: 'id -u').trim()
                         gid = sh(returnStdout: true, script: 'id -g').trim()
                         docker.withRegistry('', 'docker-access') {
-                            docker.image('dyndrite/corazon-ubuntu20.04-cuda11.2:clang-10').inside("--runtime=nvidia -u ${uid}:${gid} -e CONAN_USER_HOME=${WORKSPACE} -e CONAN_USER_HOME_SHORT=None") {
+                            docker.image('dyndrite/corazon-ubuntu20.04-cuda11.6:clang-10').inside("--runtime=nvidia -u ${uid}:${gid} -e CONAN_USER_HOME=${WORKSPACE} -e CONAN_USER_HOME_SHORT=None") {
                                 localConanClientID = conanArtifactoryConnection()
                                 rtConanRun (
                                     clientId: localConanClientID,
@@ -534,7 +534,7 @@ pipeline {
                         uid = sh(returnStdout: true, script: 'id -u').trim()
                         gid = sh(returnStdout: true, script: 'id -g').trim()
                         docker.withRegistry('', 'docker-access') {
-                            docker.image('dyndrite/corazon-ubuntu20.04-cuda11.2:clang-11').inside("--runtime=nvidia -u ${uid}:${gid} -e CONAN_USER_HOME=${WORKSPACE} -e CONAN_USER_HOME_SHORT=None") {
+                            docker.image('dyndrite/corazon-ubuntu20.04-cuda11.6:clang-11').inside("--runtime=nvidia -u ${uid}:${gid} -e CONAN_USER_HOME=${WORKSPACE} -e CONAN_USER_HOME_SHORT=None") {
                                 localConanClientID = conanArtifactoryConnection()
                                 rtConanRun (
                                     clientId: localConanClientID,
@@ -565,7 +565,7 @@ pipeline {
                         uid = sh(returnStdout: true, script: 'id -u').trim()
                         gid = sh(returnStdout: true, script: 'id -g').trim()
                         docker.withRegistry('', 'docker-access') {
-                            docker.image('dyndrite/corazon-ubuntu20.04-cuda11.2:clang-11').inside("--runtime=nvidia -u ${uid}:${gid} -e CONAN_USER_HOME=${WORKSPACE} -e CONAN_USER_HOME_SHORT=None") {
+                            docker.image('dyndrite/corazon-ubuntu20.04-cuda11.6:clang-11').inside("--runtime=nvidia -u ${uid}:${gid} -e CONAN_USER_HOME=${WORKSPACE} -e CONAN_USER_HOME_SHORT=None") {
                                 localConanClientID = conanArtifactoryConnection()
                                 rtConanRun (
                                     clientId: localConanClientID,
@@ -610,10 +610,10 @@ pipeline {
             agent {
                 label 'dev-env-20201110-windows'
             }
-            when {
-                beforeAgent true
-                branch 'dyn_master'
-            }
+            // when {
+            //     beforeAgent true
+            //     branch 'dyn_master'
+            // }
             steps {
                 echo "BuildNode ${NODE_NAME}"
                 script {
