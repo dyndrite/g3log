@@ -13,10 +13,10 @@ required_conan_version = ">=1.50.0"
 def determine_git_url():
     try:
         if environ['CONAN_HTTPS_USERNAME'] is not None:
-            remote_url = "https://bitbucket.org/dynall/clapack.git"
+            remote_url = "https://github.com/dyndrite/g3log.git"
             return remote_url
     except KeyError:
-        return "git@bitbucket.org:dynall/clapack.git"
+        return "git@github.com:dyndrite/g3log.git"
 
 
 def determine_https_user():
