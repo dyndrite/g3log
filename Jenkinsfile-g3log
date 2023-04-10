@@ -631,6 +631,56 @@ pipeline {
                 }
             }
         }
+        stage('G3log Conan - VS22 Release') {
+            agent {
+                label 'dev-env-20230103-windows'
+            }
+            when {
+                beforeAgent true
+                branch 'master'
+            }
+            steps {
+                echo "BuildNode ${NODE_NAME}"
+                script {
+                    withEnv(["CONAN_USER_HOME=${WORKSPACE}", "CONAN_NON_INTERACTIVE=1", "CONAN_REVISIONS_ENABLED=1", "CONAN_SCM_TO_CONANDATA=1"]) {
+                        localConanClientID = conanArtifactoryConnection()
+                        rtConanRun (
+                            clientId: localConanClientID,
+                            command: "create conan_recipe/all/conanfile.py dynd-g3log/${version}@dyndrite/stable -pr=conan_recipe/profiles/visual_studio_22 -s build_type=Release"
+                        )
+                        rtConanRun (
+                            clientId: localConanClientID,
+                            command: "upload dynd-g3log/* --remote dyndConanProdLocal --all --confirm"
+                        )
+                    }
+                }
+            }
+        }
+        stage('G3log Conan - VS22 Debug') {
+            agent {
+                label 'dev-env-20230103-windows'
+            }
+            when {
+                beforeAgent true
+                branch 'master'
+            }
+            steps {
+                echo "BuildNode ${NODE_NAME}"
+                script {
+                    withEnv(["CONAN_USER_HOME=${WORKSPACE}", "CONAN_NON_INTERACTIVE=1", "CONAN_REVISIONS_ENABLED=1", "CONAN_SCM_TO_CONANDATA=1"]) {
+                        localConanClientID = conanArtifactoryConnection()
+                        rtConanRun (
+                            clientId: localConanClientID,
+                            command: "create conan_recipe/all/conanfile.py dynd-g3log/${version}@dyndrite/stable -pr=conan_recipe/profiles/visual_studio_22 -s build_type=Debug"
+                        )
+                        rtConanRun (
+                            clientId: localConanClientID,
+                            command: "upload dynd-g3log/* --remote dyndConanProdLocal --all --confirm"
+                        )
+                    }
+                }
+            }
+        }
         stage ('Auto-Tag Repository') {
             when {
                 allOf {
