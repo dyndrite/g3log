@@ -78,7 +78,6 @@ class G3logConan(ConanFile):
         "password": determine_https_pass()
     }
 
-    @property
     def _compilers_minimum_version(self):
         return {
             "gcc": "6.1",
@@ -108,7 +107,7 @@ class G3logConan(ConanFile):
             min_length = min(len(lv1), len(lv2))
             return lv1[:min_length] < lv2[:min_length]
 
-        minimum_version = self._compilers_minimum_version.get(str(self.info.settings.compiler), False)
+        minimum_version = self._compilers_minimum_version().get(str(self.info.settings.compiler), False)
         if minimum_version and loose_lt_semver(str(self.info.settings.compiler.version), minimum_version):
             raise ConanInvalidConfiguration(
                 "{} requires C++14, which your compiler does not support.".format(self.name)
