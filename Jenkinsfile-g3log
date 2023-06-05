@@ -190,7 +190,7 @@ pipeline {
                 axes {
                     axis {
                         name 'compiler_version'
-                        values 'clang-11', 'clang-12', 'clang-13', 'clang-14', 'clang-15', 'clang-16', 
+                        values 'clang-11', 'clang-12', 'clang-13', 'clang-14', 'clang-15', 'clang-16'
                     }
                     axis {
                         name 'docker_node'
