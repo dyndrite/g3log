@@ -25,7 +25,7 @@ pipeline {
                 }
             }
         }
-        stage ('G3Log Conan GCC') {
+        stage ('G3Log Conan Ubuntu 20.04 GCC') {
             matrix {
                 when {
                     beforeAgent true
@@ -34,7 +34,7 @@ pipeline {
                 axes {
                     axis {
                         name 'compiler_version'
-                        values 'gcc-7', 'gcc-9', 'gcc-10'
+                        values 'gcc-7'
                     }
                     axis {
                         name 'docker_node'
@@ -77,7 +77,7 @@ pipeline {
                 }
             }
         }
-        stage ('G3Log Conan Clang') {
+        stage ('G3Log Conan Ubuntu 20.04 Clang') {
             matrix {
                 when {
                     beforeAgent true
@@ -86,7 +86,7 @@ pipeline {
                 axes {
                     axis {
                         name 'compiler_version'
-                        values 'clang-10', 'clang-11', 'clang-12', 'clang-13'
+                        values 'clang-10'
                     }
                     axis {
                         name 'docker_node'
@@ -105,6 +105,110 @@ pipeline {
                                         withEnv(["CONAN_USER_HOME=${WORKSPACE}", "CONAN_NON_INTERACTIVE=1", "CONAN_REVISIONS_ENABLED=1", "CONAN_SCM_TO_CONANDATA=1"]) {
                                             docker.withRegistry('', 'docker-access') {
                                                 docker.image("dyndrite/corazon-ubuntu20.04-cuda11.6:${compiler_version}").inside("--runtime=nvidia") {
+                                                    localConanClientID = conanArtifactoryConnection()
+                                                    rtConanRun (
+                                                        clientId: localConanClientID,
+                                                        command: "create conan_recipe/all/conanfile.py dynd-g3log/${version}@dyndrite/stable -pr=conan_recipe/profiles/${compiler_version} -s build_type=Release"
+                                                    )
+                                                    rtConanRun (
+                                                        clientId: localConanClientID,
+                                                        command: "create conan_recipe/all/conanfile.py dynd-g3log/${version}@dyndrite/stable -pr=conan_recipe/profiles/${compiler_version} -s build_type=Debug"
+                                                    )
+                                                    rtConanRun (
+                                                        clientId: localConanClientID,
+                                                        command: "upload dynd-g3log/* --remote dyndConanProdLocal --all --confirm"
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        stage ('G3Log Conan Ubuntu 22.04 GCC') {
+            matrix {
+                when {
+                    beforeAgent true
+                    branch 'master'
+                }
+                axes {
+                    axis {
+                        name 'compiler_version'
+                        values 'gcc-9', 'gcc-10', 'gcc-11', 'gcc-12'
+                    }
+                    axis {
+                        name 'docker_node'
+                        values 'linux_docker'
+                    }
+                }
+                stages {
+                    stage("Build and Push Image") {
+                        steps {
+                            throttle(['CorazonBuild']) {
+                                node("${docker_node}") {
+                                    script {
+                                        cleanWs()
+                                        checkout scm
+                                        echo "Building G3log Conan package ${compiler_version} on node ${NODE_NAME}."
+                                        withEnv(["CONAN_USER_HOME=${WORKSPACE}", "CONAN_NON_INTERACTIVE=1", "CONAN_REVISIONS_ENABLED=1", "CONAN_SCM_TO_CONANDATA=1"]) {
+                                            docker.withRegistry('', 'docker-access') {
+                                                docker.image("dyndrite/corazon-ubuntu22.04-cuda12.0:${compiler_version}").inside("--runtime=nvidia") {
+                                                    localConanClientID = conanArtifactoryConnection()
+                                                    rtConanRun (
+                                                        clientId: localConanClientID,
+                                                        command: "create conan_recipe/all/conanfile.py dynd-g3log/${version}@dyndrite/stable -pr=conan_recipe/profiles/${compiler_version} -s build_type=Release"
+                                                    )
+                                                    rtConanRun (
+                                                        clientId: localConanClientID,
+                                                        command: "create conan_recipe/all/conanfile.py dynd-g3log/${version}@dyndrite/stable -pr=conan_recipe/profiles/${compiler_version} -s build_type=Debug"
+                                                    )
+                                                    rtConanRun (
+                                                        clientId: localConanClientID,
+                                                        command: "upload dynd-g3log/* --remote dyndConanProdLocal --all --confirm"
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        stage ('G3Log Conan Ubuntu 22.04 Clang') {
+            matrix {
+                when {
+                    beforeAgent true
+                    branch 'master'
+                }
+                axes {
+                    axis {
+                        name 'compiler_version'
+                        values 'clang-11', 'clang-12', 'clang-13', 'clang-14', 'clang-15', 'clang-16'
+                    }
+                    axis {
+                        name 'docker_node'
+                        values 'linux_docker'
+                    }
+                }
+                stages {
+                    stage("Build and Push Image") {
+                        steps {
+                            throttle(['CorazonBuild']) {
+                                node("${docker_node}") {
+                                    script {
+                                        cleanWs()
+                                        checkout scm
+                                        echo "Building G3Log Conan package ${compiler_version} on node ${NODE_NAME}."
+                                        withEnv(["CONAN_USER_HOME=${WORKSPACE}", "CONAN_NON_INTERACTIVE=1", "CONAN_REVISIONS_ENABLED=1", "CONAN_SCM_TO_CONANDATA=1"]) {
+                                            docker.withRegistry('', 'docker-access') {
+                                                docker.image("dyndrite/corazon-ubuntu22.04-cuda12.0:${compiler_version}").inside("--runtime=nvidia") {
                                                     localConanClientID = conanArtifactoryConnection()
                                                     rtConanRun (
                                                         clientId: localConanClientID,

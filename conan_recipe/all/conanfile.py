@@ -2,17 +2,18 @@ from conan import ConanFile
 from conan.errors import ConanInvalidConfiguration
 from conan.tools.build import check_min_cppstd
 from conan.tools.cmake import CMake, CMakeToolchain, cmake_layout
-from conan.tools.files import copy, get, rmdir, save, rename
+from conan.tools.files import copy, get, rmdir, save
 from conan.tools.microsoft import is_msvc
-from os import environ
+from conan.tools.scm import Version
 import os
 import textwrap
 
-required_conan_version = ">=1.50.0"
+required_conan_version = ">=1.53.0"
+
 
 def determine_git_url():
     try:
-        if environ['CONAN_HTTPS_USERNAME'] is not None:
+        if os.environ['CONAN_HTTPS_USERNAME'] is not None:
             remote_url = "https://github.com/dyndrite/g3log.git"
             return remote_url
     except KeyError:
@@ -21,31 +22,34 @@ def determine_git_url():
 
 def determine_https_user():
     try:
-        if environ['CONAN_HTTPS_USERNAME'] is not None:
-            http_user = environ['CONAN_HTTPS_USERNAME']
+        if os.environ['CONAN_HTTPS_USERNAME'] is not None:
+            http_user = os.environ['CONAN_HTTPS_USERNAME']
             return http_user
     except KeyError:
         return None
 
+
 def determine_https_pass():
     try:
-        if environ['CONAN_HTTPS_PASS'] is not None:
-            http_pass = environ['CONAN_HTTPS_PASS']
+        if os.environ['CONAN_HTTPS_PASS'] is not None:
+            http_pass = os.environ['CONAN_HTTPS_PASS']
             return http_pass
     except KeyError:
         return None
 
+
 class G3logConan(ConanFile):
     name = "dynd-g3log"
     revision_mode = "scm"
-    url = "https://github.com/conan-io/conan-center-index"
-    homepage = "https://github.com/KjellKod/g3log"
-    license = "The Unlicense"
     description = (
         "G3log is an asynchronous, \"crash safe\", logger that is easy to use "
         "with default logging sinks or you can add your own."
     )
-    topics = ("g3log", "log")
+    license = "The Unlicense"
+    url = "https://github.com/conan-io/conan-center-index"
+    homepage = "https://github.com/KjellKod/g3log"
+    topics = ("logging", "log", "asynchronous")
+    package_type = "library"
     settings = "os", "arch", "compiler", "build_type"
     options = {
         "shared": [True, False],
@@ -68,8 +72,7 @@ class G3logConan(ConanFile):
         "enable_fatal_signal_handling": False,
         "enable_vectored_exception_handling": False,
         "debug_break_at_fatal_signal": False,
-    }	
-
+    }
     scm = {
         "type": "git",
         "url": determine_git_url(),
@@ -79,13 +82,30 @@ class G3logConan(ConanFile):
     }
 
     @property
+    def _min_cppstd(self):
+        return "14" if Version(self.version) < "2.0" else "17"
+
+    @property
     def _compilers_minimum_version(self):
         return {
-            "gcc": "6.1",
-            "clang": "3.4",
-            "apple-clang": "5.1",
-            "Visual Studio": "15",
-        }
+            "14": {
+                "gcc": "6.1",
+                "clang": "3.4",
+                "apple-clang": "5.1",
+                "Visual Studio": "15",
+                "msvc": "191",
+            },
+            "17": {
+                "gcc": "8",
+                "clang": "7",
+                "apple-clang": "12",
+                "Visual Studio": "16",
+                "msvc": "192",
+            },
+        }.get(self._min_cppstd, {})
+
+    # def export_sources(self):
+    #     export_conandata_patches(self)
 
     def config_options(self):
         if self.settings.os == "Windows":
@@ -96,11 +116,14 @@ class G3logConan(ConanFile):
 
     def configure(self):
         if self.options.shared:
-            del self.options.fPIC
+            self.options.rm_safe("fPIC")
+
+    def layout(self):
+        cmake_layout(self, src_folder=self.source_folder)
 
     def validate(self):
-        if self.info.settings.compiler.cppstd:
-            check_min_cppstd(self, "14")
+        if self.settings.compiler.get_safe("cppstd"):
+            check_min_cppstd(self, self._min_cppstd)
 
         def loose_lt_semver(v1, v2):
             lv1 = [int(v) for v in v1.split(".")]
@@ -108,14 +131,15 @@ class G3logConan(ConanFile):
             min_length = min(len(lv1), len(lv2))
             return lv1[:min_length] < lv2[:min_length]
 
-        minimum_version = self._compilers_minimum_version.get(str(self.info.settings.compiler), False)
-        if minimum_version and loose_lt_semver(str(self.info.settings.compiler.version), minimum_version):
+        minimum_version = self._compilers_minimum_version.get(
+            str(self.settings.compiler), False)
+        if minimum_version and loose_lt_semver(str(self.settings.compiler.version), minimum_version):
             raise ConanInvalidConfiguration(
-                "{} requires C++14, which your compiler does not support.".format(self.name)
+                f"{self.ref} requires C++{self._min_cppstd}, which your compiler does not support."
             )
 
-    def layout(self):
-        cmake_layout(self, src_folder=self.source_folder)
+    # def source(self):
+    #     get(self, **self.conan_data["sources"][self.version], strip_root=True)
 
     def generate(self):
         tc = CMakeToolchain(self)
@@ -135,20 +159,23 @@ class G3logConan(ConanFile):
         tc.generate()
 
     def build(self):
+        # apply_conandata_patches(self)
         cmake = CMake(self)
         cmake.configure()
         cmake.build()
 
     def package(self):
-        copy(self, "LICENSE", src=self.source_folder, dst=os.path.join(self.package_folder, "licenses"))
+        copy(self, "LICENSE", src=self.source_folder,
+             dst=os.path.join(self.package_folder, "licenses"))
         cmake = CMake(self)
         cmake.install()
         rmdir(self, os.path.join(self.package_folder, "lib", "cmake"))
+
+        # TODO: to remove in conan v2 once legacy generators removed
         self._create_cmake_module_alias_targets(
             os.path.join(self.package_folder, self._module_file_rel_path),
             {"g3log": "g3log::g3log"},
         )
-        self._rename_libraries()
 
     def _create_cmake_module_alias_targets(self, module_file, targets):
         content = ""
@@ -166,39 +193,18 @@ class G3logConan(ConanFile):
         return os.path.join("lib", "cmake", f"conan-official-{self.name}-targets.cmake")
 
     def package_info(self):
-        self.cpp_info.set_property("cmake_file_name", "g3logger")
-        self.cpp_info.set_property("cmake_target_name", "g3logger")
-        self.cpp_info.libs = ["g3logger"]
-        self.cpp_info.names["cmake_find_package"] = "g3logger"
-        self.cpp_info.names["cmake_find_package_multi"] = "g3logger"
+        self.cpp_info.set_property("cmake_file_name", "g3log")
+        self.cpp_info.set_property("cmake_target_name", "g3log")
+        self.cpp_info.libs = ["g3logger" if Version(
+            self.version) < "1.3.4" else "g3log"]
 
-        if str(self.settings.os) in ["Linux", "Android"]:
-            self.cpp_info.libs.append('pthread')
-        self.cpp_info.build_modules["cmake_find_package"] = [self._module_file_rel_path]
-        self.cpp_info.build_modules["cmake_find_package_multi"] = [self._module_file_rel_path]
-
-    def _rename_libraries(self):
+        if self.settings.os in ["Linux", "FreeBSD", "Android"]:
+            self.cpp_info.system_libs.extend(["m", "pthread", "rt"])
         if self.settings.os == "Windows":
-            lib_path = os.path.join(self.package_folder, "lib")
-            if self.options.shared:
-                if self.settings.compiler == "Visual Studio":
-                    current_lib = os.path.join(lib_path, "g3log.lib")
-                    rename(self, src=current_lib, dst=os.path.join(lib_path, "g3logger.lib"))
-            else:
-                if self.settings.compiler == "Visual Studio":
-                    current_lib = os.path.join(lib_path, "g3log.lib")
-                    rename(self, src=current_lib, dst=os.path.join(lib_path, "g3logger.lib"))
-                elif self.settings.compiler == "gcc":
-                    current_lib = os.path.join(lib_path, "libg3log.a")
-                    rename(self, src=current_lib, dst=os.path.join(lib_path, "libg3logger.a"))
-                elif self.settings.compiler == "clang":
-                    current_lib = os.path.join(lib_path, "g3log.lib")
-                    rename(self, src=current_lib, dst=os.path.join(lib_path, "g3logger.lib"))
-        if self.settings.os == "Linux":
-            lib_path = os.path.join(self.package_folder, "lib")
-            if self.settings.compiler == "gcc":
-                current_lib = os.path.join(lib_path, "libg3log.a")
-                rename(self, src=current_lib, dst=os.path.join(lib_path, "libg3logger.a"))
-            elif self.settings.compiler == "clang":
-                current_lib = os.path.join(lib_path, "libg3log.a")
-                rename(self, src=current_lib, dst=os.path.join(lib_path, "libg3logger.a"))
+            self.cpp_info.system_libs.append("dbghelp")
+
+        # TODO: to remove in conan v2 once legacy generators removed
+        self.cpp_info.build_modules["cmake_find_package"] = [
+            self._module_file_rel_path]
+        self.cpp_info.build_modules["cmake_find_package_multi"] = [
+            self._module_file_rel_path]
