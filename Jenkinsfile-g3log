@@ -30,7 +30,7 @@ pipeline {
                 axes {
                     axis {
                         name 'compiler_version'
-                        values 'gcc-7'
+                        values 'gcc-7', 'gcc-8'
                     }
                     axis {
                         name 'docker_node'
