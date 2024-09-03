@@ -234,7 +234,7 @@ pipeline {
                 checkout scm
                 echo "BuildNode ${NODE_NAME}"
                 script {
-                    withEnv(["BRANCH_NAME=${env.BRANCH_NAME}", "CONAN_USER_HOME=${WORKSPACE}", "CONAN_NON_INTERACTIVE=1", "CONAN_REVISIONS_ENABLED=1", "CONAN_SCM_TO_CONANDATA=1"]) {
+                    withEnv(["BRANCH_NAME=${env.BRANCH_NAME}", "CONAN_USER_HOME=${WORKSPACE}", "CONAN_USER_HOME_SHORT=${WORKSPACE}/conan-short", "CONAN_NON_INTERACTIVE=1", "CONAN_REVISIONS_ENABLED=1", "CONAN_SCM_TO_CONANDATA=1"]) {
                         localConanClientID = conanArtifactoryConnection()
                         rtConanRun (
                             clientId: localConanClientID,
