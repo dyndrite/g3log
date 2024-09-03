@@ -1,0 +1,8 @@
+include(linux_base)
+[settings]
+compiler=gcc
+compiler.cppstd=17
+compiler.libcxx=libstdc++11
+[env]
+CC=/usr/bin/cc
+CXX=/usr/bin/c++

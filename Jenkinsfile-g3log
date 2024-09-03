@@ -25,7 +25,7 @@ pipeline {
                 }
             }
         }
-        stage ('G3Log Conan Ubuntu 20.04 GCC') {
+        stage ('Dynd-G3log Conan Ubuntu 20.04 GCC') {
             matrix {
                 axes {
                     axis {
@@ -45,7 +45,7 @@ pipeline {
                                     script {
                                         cleanWs()
                                         checkout scm
-                                        echo "Building G3log Conan package ${compiler_version} on node ${NODE_NAME}."
+                                        echo "Building dynd-g3log Conan package ${compiler_version} on node ${NODE_NAME}."
                                         withEnv(["BRANCH_NAME=${env.BRANCH_NAME}", "CONAN_USER_HOME=${WORKSPACE}", "CONAN_NON_INTERACTIVE=1", "CONAN_REVISIONS_ENABLED=1", "CONAN_SCM_TO_CONANDATA=1"]) {
                                             docker.withRegistry('', 'docker-access') {
                                                 docker.image("dyndrite/corazon-ubuntu20.04-cuda11.6:${compiler_version}").inside("--runtime=nvidia") {
@@ -75,7 +75,7 @@ pipeline {
                 }
             }
         }
-        stage ('G3Log Conan Ubuntu 20.04 Clang') {
+        stage ('Dynd-G3log Conan Ubuntu 20.04 Clang') {
             matrix {
                 axes {
                     axis {
@@ -95,7 +95,7 @@ pipeline {
                                     script {
                                         cleanWs()
                                         checkout scm
-                                        echo "Building G3Log Conan package ${compiler_version} on node ${NODE_NAME}."
+                                        echo "Building dynd-g3log Conan package ${compiler_version} on node ${NODE_NAME}."
                                         withEnv(["BRANCH_NAME=${env.BRANCH_NAME}", "CONAN_USER_HOME=${WORKSPACE}", "CONAN_NON_INTERACTIVE=1", "CONAN_REVISIONS_ENABLED=1", "CONAN_SCM_TO_CONANDATA=1"]) {
                                             docker.withRegistry('', 'docker-access') {
                                                 docker.image("dyndrite/corazon-ubuntu20.04-cuda11.6:${compiler_version}").inside("--runtime=nvidia") {
@@ -125,7 +125,7 @@ pipeline {
                 }
             }
         }
-        stage ('G3Log Conan Ubuntu 22.04 GCC') {
+        stage ('Dynd-G3log Conan Ubuntu 22.04 GCC') {
             matrix {
                 axes {
                     axis {
@@ -145,7 +145,7 @@ pipeline {
                                     script {
                                         cleanWs()
                                         checkout scm
-                                        echo "Building G3log Conan package ${compiler_version} on node ${NODE_NAME}."
+                                        echo "Building dynd-g3log Conan package ${compiler_version} on node ${NODE_NAME}."
                                         withEnv(["BRANCH_NAME=${env.BRANCH_NAME}", "CONAN_USER_HOME=${WORKSPACE}", "CONAN_NON_INTERACTIVE=1", "CONAN_REVISIONS_ENABLED=1", "CONAN_SCM_TO_CONANDATA=1"]) {
                                             docker.withRegistry('', 'docker-access') {
                                                 docker.image("dyndrite/corazon-ubuntu22.04-cuda12.0:${compiler_version}").inside("--runtime=nvidia") {
@@ -175,7 +175,7 @@ pipeline {
                 }
             }
         }
-        stage ('G3Log Conan Ubuntu 22.04 Clang') {
+        stage ('Dynd-G3log Conan Ubuntu 22.04 Clang') {
             matrix {
                 axes {
                     axis {
@@ -195,7 +195,7 @@ pipeline {
                                     script {
                                         cleanWs()
                                         checkout scm
-                                        echo "Building G3Log Conan package ${compiler_version} on node ${NODE_NAME}."
+                                        echo "Building dynd-g3log Conan package ${compiler_version} on node ${NODE_NAME}."
                                         withEnv(["BRANCH_NAME=${env.BRANCH_NAME}", "CONAN_USER_HOME=${WORKSPACE}", "CONAN_NON_INTERACTIVE=1", "CONAN_REVISIONS_ENABLED=1", "CONAN_SCM_TO_CONANDATA=1"]) {
                                             docker.withRegistry('', 'docker-access') {
                                                 docker.image("dyndrite/corazon-ubuntu22.04-cuda12.0:${compiler_version}").inside("--runtime=nvidia") {
@@ -225,38 +225,9 @@ pipeline {
                 }
             }
         }
-        stage('G3log Conan VS19') {
+        stage('G3log Conan - VS22') {
             agent {
-                label 'dev-env-20201110-windows'
-            }
-            steps {
-                cleanWs()
-                checkout scm
-                echo "BuildNode ${NODE_NAME}"
-                script {
-                    withEnv(["BRANCH_NAME=${env.BRANCH_NAME}", "CONAN_USER_HOME=${WORKSPACE}", "CONAN_NON_INTERACTIVE=1", "CONAN_REVISIONS_ENABLED=1", "CONAN_SCM_TO_CONANDATA=1"]) {
-                        localConanClientID = conanArtifactoryConnection()
-                        rtConanRun (
-                            clientId: localConanClientID,
-                            command: "create conan_recipe/all/conanfile.py dynd-g3log/${version}@dyndrite/stable -pr=conan_recipe/profiles/visual_studio_19 -s build_type=Release"
-                        )
-                        rtConanRun (
-                            clientId: localConanClientID,
-                            command: "create conan_recipe/all/conanfile.py dynd-g3log/${version}@dyndrite/stable -pr=conan_recipe/profiles/visual_studio_19 -s build_type=Debug"
-                        )
-                        if(env.BRANCH_NAME == 'master') {
-                            rtConanRun (
-                                clientId: localConanClientID,
-                                command: "upload dynd-g3log/* --remote dyndConanProdLocal --all --confirm"
-                            )
-                        }
-                    }
-                }
-            }
-        }
-        stage('G3log Conan VS22') {
-            agent {
-                label 'dev-env-20230103-windows'
+                label 'dev-env-20240524-windows'
             }
             steps {
                 cleanWs()
@@ -283,21 +254,21 @@ pipeline {
                 }
             }
         }
-        stage ('Auto-Tag Repository') {
-            when {
-                allOf {
-                    changeset 'version.txt'
-                    branch 'master'
-                }
-                beforeAgent true
-            }
-            steps {
-                script {
-                    buildDescription "${version}"
-                    gitTag credential_id: 'c0161a12-51d0-4949-b8f8-04cb78337c8f', git_tag: "${version}"
-                }
-            }
-        }
+        // stage ('Auto-Tag Repository') {
+        //     when {
+        //         allOf {
+        //             changeset 'version.txt'
+        //             branch 'dyn_master'
+        //         }
+        //         beforeAgent true
+        //     }
+        //     steps {
+        //         script {
+        //             buildDescription "${version}"
+        //             gitTag credential_id: 'c0161a12-51d0-4949-b8f8-04cb78337c8f', git_tag: "${version}"
+        //         }
+        //     }
+        // }
     }
     post {
         failure {
