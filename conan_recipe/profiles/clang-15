@@ -1,0 +1,7 @@
+include(linux_clang_base)
+[settings]
+compiler.version=15
+[options]
+[env]
+CC=/usr/bin/clang-15
+CXX=/usr/bin/clang++-15

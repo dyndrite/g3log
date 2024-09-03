@@ -1,0 +1,5 @@
+include(linux_base)
+[settings]
+compiler=clang
+compiler.cppstd=17
+compiler.libcxx=libstdc++11

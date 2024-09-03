@@ -1,0 +1,3 @@
+include(linux_gcc_base)
+[settings]
+compiler.version=9
